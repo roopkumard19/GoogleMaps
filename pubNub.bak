@@ -1,0 +1,54 @@
+!doctype html>
+<html>
+  <head>
+    <title>Drone Tracking</title>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.4.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Drone Tracking</h1>
+      <div id="map-canvas" style="width:1500px;height:1000px"></div>
+    </div>
+
+    <script>
+    window.lat = 37.333;
+    window.lng = -121.911;
+    var map;
+    var mark;
+    var lineCoords = [];
+    var initialize = function() {
+      map  = new google.maps.Map(document.getElementById('map-canvas'), {center:{lat:lat,lng:lng},zoom:12});
+      mark = new google.maps.Marker({position:{lat:lat, lng:lng}, map:map});
+      lineCoords.push(new google.maps.LatLng(window.lat, window.lng));
+    };
+    window.initialize = initialize;
+    var redraw = function(payload) {
+      console.log(payload.message[0]);
+      lat = payload.message[0];
+      lng = payload.message[1];
+      map.setCenter({lat:lat, lng:lng, alt:0});
+      mark.setPosition({lat:lat, lng:lng, alt:0});
+      lineCoords.push(new google.maps.LatLng(lat, lng));
+      var lineCoordinatesPath = new google.maps.Polyline({
+        path: lineCoords,
+        geodesic: true,
+        strokeColor: '#2E10FF'
+      });
+      
+      lineCoordinatesPath.setMap(map);
+    };
+    var pnChannel = "logging";
+    var pubnub = new PubNub({
+      publishKey: 'pub-c-b3b3434d-7fbb-4ce6-bcc2-6762382de1d4',
+      subscribeKey: 'sub-c-e2aa1c80-b6f9-11e7-b8f2-c6027b8a2e05'
+    });
+    pubnub.subscribe({channels: [pnChannel]});
+    console.log("Subscribing..");
+    pubnub.addListener({message:redraw});
+    
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDJbbwFap_qPasM0txWla5pHR-EYEctweY&callback=initialize"></script>
+  </body>
+</html>
