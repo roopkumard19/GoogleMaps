@@ -40,7 +40,8 @@
     show_markers();
 
 
-    };
+    
+};
 
    function show_markers(){
      
@@ -79,10 +80,23 @@ marker = new google.maps.Marker({position:meshnode3, label: "M3", map:map});
             fillOpacity: 0.35,
             map: map,
             center: meshnode3,
-            radius: 18
-          
+            radius: 18      
 
 });
+
+
+setInterval(function(){
+	Circle = new google.maps.Circle({
+	    strokeColor: '#8B0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            center: meshnode3,
+            radius: 18
+});}, 5000);
+
 
 marker = new google.maps.Marker({position:drone, label: "D", map:map});
       Circle = new google.maps.Circle({
@@ -95,10 +109,14 @@ marker = new google.maps.Marker({position:drone, label: "D", map:map});
             center: drone,
             radius: 18
           
-
+ 
 });
 
      lineCoords.push(new google.maps.LatLng(drone.lat, drone.lng));
+
+
+
+     
 }
     
 
@@ -128,6 +146,8 @@ marker = new google.maps.Marker({position:drone, label: "D", map:map});
     console.log("Subscribing..");
     pubnub.addListener({message:redraw});
     
+
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDJbbwFap_qPasM0txWla5pHR-EYEctweY&callback=initialize"></script>
   </body>
