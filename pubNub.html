@@ -37,7 +37,7 @@
     var drone = {lat: 37.344691, lng: -121.873373};
     var meshnode1 = {lat: 37.344846, lng: -121.873891};
     var meshnode2 = {lat: 37.345065, lng: -121.873227};
-    var meshnode3 = {lat:37.345106, lng: -121.873648};
+    var meshnode3 = {lat: 37.345106, lng: -121.873648};
 
     
     var initialize = function() {
@@ -52,7 +52,8 @@
 
 setTimeout(myFunction, 10000);
 function myFunction() {
-   ircle = new google.maps.Circle({
+	Circle3.setMap(null);
+  var Circle = new google.maps.Circle({
 	    strokeColor: '#8B0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
