@@ -25,28 +25,49 @@
     <script>
 
     var map;
-    var Circle;
     var lineCoords = [];
-    
+    var marker1;
+	var marker2;
+	var marker3;
+	var marker4;
+	var Circle1;
+	var Circle2;
+	var Circle3;
+	var Circle4;
     var drone = {lat: 37.344691, lng: -121.873373};
     var meshnode1 = {lat: 37.344846, lng: -121.873891};
     var meshnode2 = {lat: 37.345065, lng: -121.873227};
     var meshnode3 = {lat:37.345106, lng: -121.873648};
-    var marker, i;
 
     
     var initialize = function() {
       map  = new google.maps.Map(document.getElementById('map-canvas'), {center:{lat: 37.344968, lng: -121.873554},zoom:17,mapTypeId: 'satellite'});
+
+
     show_markers();
 
 
-    
+
 };
 
+setTimeout(myFunction, 10000);
+function myFunction() {
+   ircle = new google.maps.Circle({
+	    strokeColor: '#8B0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            center: meshnode3,
+            radius: 18
+});
+}
+		    
    function show_markers(){
      
-      marker = new google.maps.Marker({position:meshnode1, label: "M1", map:map});
-      Circle = new google.maps.Circle({
+       marker1 = new google.maps.Marker({position:meshnode1, label: "M1", map:map});
+       Circle1 = new google.maps.Circle({
             strokeColor: '#000080',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -58,8 +79,8 @@
           
 });
 
-marker = new google.maps.Marker({position:meshnode2, label: "M2", map:map});
-      Circle = new google.maps.Circle({
+ marker2 = new google.maps.Marker({position:meshnode2, label: "M2", map:map});
+       Circle2 = new google.maps.Circle({
             strokeColor: '#000080',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -71,8 +92,8 @@ marker = new google.maps.Marker({position:meshnode2, label: "M2", map:map});
           
 });
 
-marker = new google.maps.Marker({position:meshnode3, label: "M3", map:map});
-      Circle = new google.maps.Circle({
+ marker3 = new google.maps.Marker({position:meshnode3, label: "M3", map:map});
+      Circle3 = new google.maps.Circle({
             strokeColor: '#000080',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -82,28 +103,17 @@ marker = new google.maps.Marker({position:meshnode3, label: "M3", map:map});
             center: meshnode3,
             radius: 18      
 
+
 });
 
 
-setInterval(function(){
-	Circle = new google.maps.Circle({
-	    strokeColor: '#8B0000',
+
+marker4 = new google.maps.Marker({position:drone, label: "D", map:map});
+      Circle4 = new google.maps.Circle({
+            strokeColor: '#000000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            map: map,
-            center: meshnode3,
-            radius: 18
-});}, 5000);
-
-
-marker = new google.maps.Marker({position:drone, label: "D", map:map});
-      Circle = new google.maps.Circle({
-            strokeColor: '#000080',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#4169E1',
+            fillColor: '#808080',
             fillOpacity: 0.35,
             map: map,
             center: drone,
@@ -112,9 +122,8 @@ marker = new google.maps.Marker({position:drone, label: "D", map:map});
  
 });
 
+
      lineCoords.push(new google.maps.LatLng(drone.lat, drone.lng));
-
-
 
      
 }
@@ -125,9 +134,8 @@ marker = new google.maps.Marker({position:drone, label: "D", map:map});
       console.log(payload.message[0]);
       lat = payload.message[0];
       lng = payload.message[1];
-      map.setCenter({lat:lat, lng:lng, alt:0});
-      marker.setPosition({lat:lat, lng:lng, alt:0});
-      Circle.setCenter({lat:lat, lng:lng, alt:0})
+      marker4.setPosition({lat:lat, lng:lng, alt:0});
+      Circle4.setCenter({lat:lat, lng:lng, alt:0})
       lineCoords.push(new google.maps.LatLng(lat, lng));
       var lineCoordinatesPath = new google.maps.Polyline({
         path: lineCoords,
@@ -145,8 +153,16 @@ marker = new google.maps.Marker({position:drone, label: "D", map:map});
     pubnub.subscribe({channels: [pnChannel]});
     console.log("Subscribing..");
     pubnub.addListener({message:redraw});
-    
 
+window.lat = drone.lat;
+window.lng = drone.lng;
+
+
+
+
+setInterval(function() {
+      pubnub.publish({channel:pnChannel, message:[window.lat + 0.00001, window.lng + 0.0001]});
+    }, 15000);
 
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDJbbwFap_qPasM0txWla5pHR-EYEctweY&callback=initialize"></script>
